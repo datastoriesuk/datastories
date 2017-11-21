@@ -1,33 +1,29 @@
-import tweepy,csv
+import tweepy,csv,sys,pandas as pd
 
 # Twitter auth process
 auth = tweepy.OAuthHandler('mJ4E1iTrsDdaiiwHRHz6BnPk1', 'ANKgwrxpizaUjzThUj4xsakGu5j6VVDf8QpL0CN7kNYx9yxYSU')
 auth.set_access_token("919910347972268032-dkUsnh8aD3dMACBLDyMdPetKSmWbXDi", "fYH5hZgnvtLpqpmbX4rseiBpW4ZZeCONndiV5CXD47kbl")
 api = tweepy.API(auth)
 
-# Search for tweets with that term
-term="data"
+qr=sys.argv[1]
 
-
-
-
-def query():
-    # Create a list to tweets/m
+def query(qr):
+    # Create a list to store items
     list = []
-
     while True:
-        try:
-            for tweet in tweepy.Cursor(api.search,q=term,rpp=100,result_type="recent",include_entities=True,lang="en").items():
-                tweets.append(tweet)
+            try:
+                if qr.startswith("@"):
+                    for item in tweepy.Cursor(api.user_timeline,screen_name=qr.replace("@",""),lang="en").items():
+                        list.append(item._json)
+                else:
+                    for item in tweepy.Cursor(api.search,q=qr,rpp=100,result_type="recent",include_entities=True,lang="en").items():
+                        list.append(item)
+            except Exception as e:
+                if "e==Twitter error response: status code = 429":
+                    print("Request limit reached")
+                    # End after first limit
+                    break
+                    # Wait for request reset
+                    time.sleep(901)
 
-        except Exception as e:
-            if "e==Twitter error response: status code = 429":
-                print("Oops request limit reached")
-
-                # End after first limit
-                break
-
-                # Wait for request reset
-                time.sleep(901)
-
-csv.writer("tweets.csv")
+pd.DataFrame(list).to_csv("datastories/wp3/data/"+qr+".csv")
