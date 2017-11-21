@@ -2,7 +2,7 @@ import os,pandas as pd,requests,re,time,numpy as np,matplotlib.pyplot as plt, se
 from bs4 import BeautifulSoup
 from datetime import datetime
 from collections import Counter
-matplotlib.rcParams.update({'font.size': 24})
+matplotlib.rcParams.update({'font.size': 12})
 
 data=pd.read_csv("datastories\wp3\data\@guardian_url.csv",encoding="ISO-8859-1")
 
@@ -18,11 +18,13 @@ def plots():
     plt.xlabel("Tweet")
     plt.ylabel("Minutes")
     plt.savefig("datastories\\wp3\\data\\@guardian_news2tweet.png")
+    plt.tight_layout()
     plt.close()
 
     plt.boxplot(data["url"].value_counts())
     plt.title("URL frequency boxplot")
     plt.savefig("datastories\\wp3\\data\\@guardian_urlfreq.png")
+    plt.tight_layout()
     plt.close()
 
 def main():
