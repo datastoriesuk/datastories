@@ -10,7 +10,6 @@ data["tweet_creation"]=0
 data["time_diff_minutes"]=0
 
 for i in data.index:
-    print(i)
     try:
         link = re.search("(?P<url>https?://[^\s]+)", data.text[i]).group("url")
         session = requests.Session()
@@ -22,5 +21,5 @@ for i in data.index:
         data["tweet_creation"][i] = datetime.strptime(data["created_at"][i], '%a %b %d %H:%M:%S +0000 %Y')
         data["time_diff_minutes"][i] = (data["tweet_creation"][i] - data["url_creation"][i]).total_seconds() / 60.0
     except Exception as e:
+        print(e)
         time.sleep(1)
-        
