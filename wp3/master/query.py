@@ -1,15 +1,16 @@
-import tweepy,sys,pandas as pd
+import tweepy,sys,os,pandas as pd
 
-keys = [line.rstrip('\n') for line in open("..\\keys.txt")]
+keys = [line.rstrip('\n') for line in open(os.path.abspath("..\\keys.txt"))]
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath("keys.txt"))))
 auth = tweepy.OAuthHandler(keys[0], keys[1])
 auth.set_access_token(keys[2], keys[3])
 api = tweepy.API(auth)
 
 #qr=sys.argv[1]
 qr="@guardian"
+twlist = []
 
 def query(qr):
-    twlist = []
     while True:
             try:
                 if qr.startswith("@"):
