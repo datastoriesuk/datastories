@@ -69,14 +69,30 @@ def gettweets(qr,users,totaltweets):
 # datasl = data[["user.id","text","retweet_count","favorite_count","user.followers_count","user.favourites_count"]]
 # datasl = datasl[np.isfinite(datasl['user.id'])]
 # datasl["text"]=[str(i).lower() for i in datasl["text"]]
-# datasl["retweet_weight"] = datasl["retweet_count"] * 1.0
-# datasl["favorite_weight"] = datasl["favorite_count"] * 2
+# datasl["retweet_weight"] = datasl["retweet_count"].astype(int).multiply(1)
+# datasl["favorite_weight"] = datasl["favorite_count"].astype(int).multiply(2)
 # datasl['popularity'] = datasl[["favorite_weight","retweet_weight"]].sum(axis=1)
 # datasl["id"]=pd.factorize(datasl["user.id"])[0]
 # datasl["normpop"]=datasl.groupby(["id"])['popularity'].transform(lambda x: (x - x.min()) / x.max() - x.min())
 # datasl['numerical_data'] = [1 if bool(re.compile('\d').search(str(i))) else 0 for i in datasl["text"]]
 # datasl['image_data'] = [1 if bool(re.compile('.jpg|.png|.gif|.img|.tiff|.pct|.jpeg|.jpe|.bmp').search(str(i))) else 0 for i in datasl["text"]]
 # datasl['url_data'] = [1 if bool(re.compile('http').search(str(i))) else 0 for i in datasl["text"]]
+# datasl["mediannorm"]=datasl.groupby(["id"])["normpop"].transform("median")
+
+def plotbar(df,col1,col2,col3):
+    df.groupby([col1, col2])[col3].mean().unstack().plot(kind="bar",title= col2 +" in tweet")
+    plt.ylabel("Popularity")
+    plt.xlabel("Twitter account")
+    plt.xticks([])
+    plt.tight_layout()
+    plt.savefig("datastories\\wp3\\plots\\temp\\379_acc_315K_tweets_"+col2+".png", dpi=1000)
+    plt.close()
+
+for i in ["numerical_data", "image_data", "url_data"]:
+    plotbar(datasl, "id", i, "normpop")
+
+
+
 
 # col1="id"
 # col2=["numerical_data","image_data","url_data"]
@@ -85,13 +101,7 @@ def gettweets(qr,users,totaltweets):
 #     plotbar(datasl, "id", i, "normpop")
 #     plotbar(datasl[datasl["popularity"]>0], "id", i, "normpop")
 
-def plotbar(df,col1,col2,col3):
-    df.groupby([col1, col2])[col3].mean().unstack().plot(kind="bar",title= col2 +" in tweet with pop > 0")
-    plt.ylabel("Popularity")
-    plt.xlabel("Twitter account")
-    plt.tight_layout()
-    plt.savefig("datastories\\wp3\\plot\\temp\\29_acc_67K_tweets_"+col2+"_shared.png", dpi=1000)
-    plt.close()
+
 
 def main():
     # query()
